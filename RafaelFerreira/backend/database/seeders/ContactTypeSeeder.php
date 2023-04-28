@@ -13,14 +13,15 @@ class ContactTypeSeeder extends Seeder
      */
     public function run(): void
     {
-        $tyoes[0] = [
-            'description' => 'Email',
-            'created_at' => date("Y-d-m H:m:s")
-        ];
-
-        $tyoes[1] = [
-            'description' => 'Telefone',
-            'created_at' => date("Y-d-m H:m:s")
+        $tyoes = [
+            [
+                'description' => 'Email',
+                'created_at' => date("Y-m-d H:m:s")
+            ],
+            [
+                'description' => 'Telefone',
+                'created_at' => date("Y-m-d H:m:s")
+            ]
         ];
 
         DB::table('contact_type')->insert($tyoes);

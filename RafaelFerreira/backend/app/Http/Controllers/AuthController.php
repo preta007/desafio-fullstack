@@ -2,12 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use ErrorException;
-use Illuminate\Auth\Events\Validated;
-use Illuminate\Http\JsonResponse;
+use App\Http\Requests\LoginRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -16,7 +12,7 @@ class AuthController extends Controller
         $this->middleware('auth:api', ['except' => ['login']]);
     }
 
-    public function login(Request $request) : JsonResponse
+    public function login(Request $request)
     {
         $request->validate([
             'email'     => ['required', 'string'],
