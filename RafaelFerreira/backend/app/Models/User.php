@@ -18,10 +18,7 @@ class User extends Authenticatable implements JWTSubject
 
 	protected $casts = [
 		'email_verified_at' => 'datetime',
-		'phone' => 'int',
-		'zip_code' => 'int',
-		'ibge' => 'int',
-		'ddd' => 'int'
+		'zip_code' => 'int'
 	];
 
 	protected $hidden = [
@@ -31,21 +28,21 @@ class User extends Authenticatable implements JWTSubject
 
 	protected $fillable = [
 		'name',
-		'last_name',
 		'email',
 		'email_verified_at',
-		'phone',
 		'password',
 		'remember_token',
 		'zip_code',
-		'public_place',
-		'complement',
+		'address',
 		'district',
 		'city',
-		'uf',
-		'ibge',
-		'ddd'
+		'state'
 	];
+
+	public function contacts()
+	{
+		return $this->hasMany(Contact::class, 'users_id');
+	}
 
 
     public function getJWTIdentifier()
