@@ -6,11 +6,10 @@
         <div class="d-flex flex-column align-items-center">
           <h6 class="mb-0 text-white lh-100">Rafael Ferreira</h6>
           <small>Desafio fullstack sub100</small>
-          
         </div>
         <div class="d-flex flex-column">
           Bem-vindo: Rafael Ferreira
-          <Button label="Sair" severity="danger" icon="pi pi-power-off" />
+          <Button label="Sair" severity="danger" icon="pi pi-power-off" @click="logout()" />
         </div>
     </div>
 
@@ -36,10 +35,13 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 import Button from 'primevue/button';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
+
+const router = useRouter();
 
 const products = ref([
         {
@@ -49,5 +51,9 @@ const products = ref([
           "category": "Outro"
         }
       ])
+
+function logout(){
+  router.push({name: 'login'})
+}
 
 </script>
