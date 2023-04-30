@@ -1,16 +1,21 @@
 
 <template>
   <div class="container">
-      <div class="d-flex align-items-center p-3 my-3 text-white-50 rounded shadow-sm bg-purple">
-        <img src="../assets/logo.svg" alt="" width="48" height="48" style="margin-right: 10px;">
-        <div class="lh-100">
+      <div class="d-flex align-items-center justify-content-between p-3 my-3 text-white-50 rounded shadow-sm bg-purple">
+        <img src="../assets/logo.svg" alt="" width="48" height="48">
+        <div class="d-flex flex-column align-items-center">
           <h6 class="mb-0 text-white lh-100">Rafael Ferreira</h6>
           <small>Desafio fullstack sub100</small>
+          
+        </div>
+        <div class="d-flex flex-column">
+          Bem-vindo: Rafael Ferreira
+          <Button label="Sair" severity="danger" icon="pi pi-power-off" />
         </div>
     </div>
 
     <div class="my-3 p-3 bg-white rounded shadow-sm">
-      <Button label="Adicionar" icon="pi pi-plus" />
+      <Button label="Adicionar" @click="addProduto()" icon="pi pi-plus" />
     </div>
 
     <div class="my-3 p-3 bg-white rounded shadow-sm">
@@ -29,28 +34,20 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue'
+
 import Button from 'primevue/button';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 
-export default{
-  components: {
-    Button,
-    DataTable,
-    Column
-  },
-  data() {
-    return {
-      products: [
+const products = ref([
         {
           "code": "1",
           "name": "Rafael",
           "category": "Teste",
           "category": "Outro"
         }
-      ]
-    }
-  },
-}
+      ])
+
 </script>
