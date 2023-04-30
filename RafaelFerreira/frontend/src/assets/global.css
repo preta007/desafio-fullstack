@@ -1,0 +1,22 @@
+body {
+    font-family: "Open Sans", sans-serif;
+    background-color: #eff3f8;
+    color: #444444;
+}
+a {
+    color: #4093fb;
+    text-decoration: none;
+}
+  
+a:hover {
+    color: #081a2e;
+    text-decoration: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Raleway", sans-serif;
+}
+
+.bg-purple {
+    background-color: #6f42c1;
+}
