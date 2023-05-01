@@ -17,6 +17,22 @@ async function getAll(){
     }
 }
 
+async function create(userValue){
+    try {
+        const { data } = await http.post("/user/create", userValue, {
+            headers: {
+                Authorization: token,
+            }
+        })
+
+        return data
+
+    } catch (error) {
+        return {status: false, data: error?.response?.data }
+    }
+}
+
 export {
-    getAll
+    getAll,
+    create
 }

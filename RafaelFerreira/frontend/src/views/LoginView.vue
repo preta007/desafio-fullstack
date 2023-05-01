@@ -82,6 +82,10 @@ main{
     justify-content: center;
 }
 
+.swal2-container {
+  z-index: 20000 !important;
+}
+
 .form-signin {
   width: 100%;
   max-width: 330px;

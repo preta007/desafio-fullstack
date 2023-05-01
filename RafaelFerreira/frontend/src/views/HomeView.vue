@@ -46,7 +46,7 @@
                   class="form-control" 
                   id="name"
                   placeholder="Nome"
-                  v-model="form.neame">
+                  v-model="form.name">
                 <label for="name">Nome</label>
           </div>
         </div>
@@ -135,7 +135,7 @@
     </div>
     <template #footer>
         <Button label="Cancelar" icon="pi pi-times" @click="visible = false" text />
-        <Button label="Salvar" icon="pi pi-check" @click="visible = false" autofocus />
+        <Button label="Salvar" icon="pi pi-check" @click="createUser()" autofocus />
     </template>
   </Dialog>
 </template>
@@ -143,7 +143,7 @@
 <script setup>
 import { ref, reactive, inject, onMounted } from 'vue'
 import { Auth } from '@/stores/auth.js'
-import { getAll } from '@/services/users.js'
+import { getAll, create } from '@/services/users.js'
 
 import http from '@/services/http.js'
 
@@ -173,7 +173,7 @@ const swal = inject('$swal')
 
 onMounted(async () => {
   const data = await getAll();
-  if(data.success){
+  if(data.status){
     users.value = data.users
     isLoading.value = false;
   }
@@ -183,6 +183,7 @@ async function buscarCEP(){
   try {
 
     if(form.zip_code == ''){
+      swal('Por favor preencha o cep!');
       return;
     }
 
@@ -199,11 +200,55 @@ async function buscarCEP(){
 }
 
 function newUser(){
+  limpaForm();
   visible.value = true;
+}
+
+async function createUser(){
+  isLoading.value = true;
+  if(!validaForm()){
+    isLoading.value = false;
+    return;
+  }
+
+  const data = await create(form)
+
+  if(!data.status){
+    console.log(data)
+    swal(data.data.message)
+    return
+  }
+  await atualizaGrid()
+  visible.value = false
+  limpaForm()
+}
+
+async function atualizaGrid(){
+  isLoading.value = true;
+  const data = await getAll();
+  if(data.status){
+    users.value = data.users
+    isLoading.value = false;
+    console.log(data)
+  }
 }
 
 function logout(){
   auth.logout()
+}
+
+function validaForm(){
+  if(form.address   === ''){ swal('Por favor preencha o endereço!'); return false  }
+  if(form.city      === ''){ swal('Por favor preencha a cidade!'); return false  }
+  if(form.district  === ''){ swal('Por favor preencha o bairro!'); return false  }
+  if(form.email     === ''){ swal('Por favor preencha o email!'); return false  }
+  if(form.name      === ''){ swal('Por favor preencha o nome!'); return false  }
+  if(form.password  === ''){ swal('Por favor preencha o password!'); return false  }
+  if(form.state     === ''){ swal('Por favor preencha o estado!'); return false  }
+  if(form.zip_code  === ''){ swal('Por favor preencha o cep!'); return false  }
+
+  return true;
+
 }
 
 function limpaForm(){
@@ -218,3 +263,9 @@ function limpaForm(){
 }
 
 </script>
+
+<style>
+.swal2-container {
+  z-index: 20000 !important;
+}
+</style>

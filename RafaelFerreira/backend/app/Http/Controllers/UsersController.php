@@ -43,7 +43,7 @@ class UsersController extends Controller
 
         $model->save();
 
-        return response()->json(['success' => true, 'message' => 'Successfully added!'], 200);
+        return response()->json(['status' => true, 'message' => 'statusfully added!'], 200);
 
     }
 
@@ -53,7 +53,7 @@ class UsersController extends Controller
         $model = User::find($id);
 
         if(!$model){
-            return response()->json(['success' => false, 'error' => 'user not found'], 404);
+            return response()->json(['status' => false, 'error' => 'user not found'], 404);
         }
 
         //\Illuminate\Validation\Rule::unique(User::class)->ignore($id)
@@ -83,7 +83,7 @@ class UsersController extends Controller
 
         $model->save();
 
-        return response()->json(['success' => true, 'message' => 'Successfully updated!'], 200);
+        return response()->json(['status' => true, 'message' => 'statusfully updated!'], 200);
     }
 
     public function delete($id)
@@ -91,18 +91,18 @@ class UsersController extends Controller
         $model = User::find($id);
 
         if(!$model){
-            return response()->json(['success' => false, 'error' => 'user not found'], 404);
+            return response()->json(['status' => false, 'error' => 'user not found'], 404);
         }
 
         $model->delete();
-        return response()->json(['success' => true, 'message' => 'Successfully deleted!'], 200);
+        return response()->json(['status' => true, 'message' => 'statusfully deleted!'], 200);
 
     }
 
     public function getAll()
     {
         $models = User::all();
-        return response()->json(['success' => true, 'users' => $models]);
+        return response()->json(['status' => true, 'users' => $models]);
     }
 
     public function getById($id)
@@ -110,10 +110,10 @@ class UsersController extends Controller
         $model = User::find($id);
 
         if(!$model){
-            return response()->json(['success' => false, 'error' => 'user not found'], 404);
+            return response()->json(['status' => false, 'error' => 'user not found'], 404);
         }
 
         $model->contacts;
-        return response()->json(['success' => true, 'user' => $model], 200);
+        return response()->json(['status' => true, 'user' => $model], 200);
     }
 }

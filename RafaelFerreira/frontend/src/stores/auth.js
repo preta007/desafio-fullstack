@@ -34,7 +34,7 @@ export const Auth = defineStore('auth', () => {
             await setToken(data.access_token)
             await setUser(data.user)
             await setIsAuth(true)
-    
+
             return {status: true, message: 'Login efetuado com sucesso!', data }
         } catch (error) {
             clear();
