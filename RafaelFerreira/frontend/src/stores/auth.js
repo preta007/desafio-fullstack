@@ -9,17 +9,17 @@ export const Auth = defineStore('auth', () => {
     const user = ref(JSON.parse(localStorage.getItem('user')))
     const isAuth = ref(false)
 
-    function setToken(tokenValue){
+    async function setToken(tokenValue){
         localStorage.setItem('token', tokenValue)
         token.value = tokenValue
     }
 
-    function setUser(userValue){
+    async function setUser(userValue){
         localStorage.setItem('user', JSON.stringify(userValue))
         user.value = userValue
     }
 
-    function setIsAuth(auth){
+    async function setIsAuth(auth){
         isAuth.value = auth
     }
 
@@ -31,9 +31,9 @@ export const Auth = defineStore('auth', () => {
         try {
             const { data } = await http.post("/auth/login", userValue);
 
-            setToken(data.access_token)
-            setUser(data.user)
-            setIsAuth(true)
+            await setToken(data.access_token)
+            await setUser(data.user)
+            await setIsAuth(true)
     
             return {status: true, message: 'Login efetuado com sucesso!', data }
         } catch (error) {
