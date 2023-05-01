@@ -34,12 +34,15 @@
 </template>
 
 <script setup>
-import {reactive, ref} from 'vue';
+import {reactive, ref, inject} from 'vue';
+import { useRouter } from 'vue-router';
 import { Auth } from '@/stores/auth.js'
 
 import Button from 'primevue/button';
 
+const router = useRouter();
 const auth = Auth();
+const swal = inject('$swal')
 
 const user = reactive({
   email: '',
@@ -48,9 +51,18 @@ const user = reactive({
 
 const isLoading = ref(false)
 
-function login(){
-  isLoading.value = true;
-  auth.login(user);
+async function login(){
+  
+    isLoading.value = true;
+    const useAuth = await auth.login(user);
+
+    if(!useAuth.status){
+      isLoading.value = false;
+      swal(useAuth.message);
+      return;
+    }
+
+    return router.push({name: 'home'});
 } 
 </script>
 <style scoped>

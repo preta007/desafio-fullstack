@@ -6,6 +6,9 @@ import router from './router'
 import { Auth } from "@/stores/auth.js";
 
 import PrimeVue from 'primevue/config';
+import VueSweetalert2 from 'vue-sweetalert2';
+
+import 'sweetalert2/dist/sweetalert2.min.css';
 
 import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap"
@@ -23,6 +26,7 @@ const pina = createPinia();
 app.use(pina)
 app.use(router)
 app.use(PrimeVue);
+app.use(VueSweetalert2);
 
 if (localStorage.getItem('token')) {
     (async () => {

@@ -35,11 +35,10 @@ export const Auth = defineStore('auth', () => {
             setUser(data.user)
             setIsAuth(true)
     
-            return router.push('/')
+            return {status: true, message: 'Login efetuado com sucesso!', data }
         } catch (error) {
             clear();
-            router.push('/login');
-            console.log('error', error.response);
+            return {status: false, message: 'Não foi possivel realizar o login!', data: error.response }
         }
     }
 

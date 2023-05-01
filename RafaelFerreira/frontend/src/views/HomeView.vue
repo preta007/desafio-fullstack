@@ -22,11 +22,11 @@
           <i class="pi pi-list"></i>
           Lista de usuários
         </h6>
-        <DataTable :value="products" stripedRows tableStyle="min-width: 50rem">
-          <Column field="code" header="Code"></Column>
-          <Column field="name" header="Name"></Column>
-          <Column field="category" header="Category"></Column>
-          <Column field="category" header="Quantity"></Column>
+        <DataTable :value="users" stripedRows tableStyle="min-width: 50rem" :loading="isLoading">
+          <Column field="id" header="ID"></Column>
+          <Column field="name" header="Nome"></Column>
+          <Column field="email" header="Email"></Column>
+          <Column field="city" header="Cidade"></Column>
         </DataTable>
 
     </div>
@@ -34,8 +34,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { Auth } from '@/stores/auth.js'
+import { getAll } from '@/services/users.js'
 
 import Button from 'primevue/button';
 import DataTable from 'primevue/datatable';
@@ -44,14 +45,16 @@ import Column from 'primevue/column';
 const auth = Auth();
 const user = ref(auth.user);
 
-const products = ref([
-        {
-          "code": "1",
-          "name": "Rafael",
-          "category": "Teste",
-          "category": "Outro"
-        }
-      ])
+const isLoading = ref(true);
+const users = ref([])
+
+onMounted(async () => {
+  const data = await getAll();
+  if(data.success){
+    users.value = data.users
+    isLoading.value = false;
+  }
+})
 
 function logout(){
   auth.logout()
