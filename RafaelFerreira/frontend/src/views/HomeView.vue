@@ -8,7 +8,7 @@
           <small>Desafio fullstack sub100</small>
         </div>
         <div class="d-flex flex-column">
-          Bem-vindo: Rafael Ferreira
+          Bem-vindo: {{ user.name }}
           <Button label="Sair" severity="danger" icon="pi pi-power-off" @click="logout()" />
         </div>
     </div>
@@ -35,13 +35,14 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { Auth } from '@/stores/auth.js'
 
 import Button from 'primevue/button';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 
-const router = useRouter();
+const auth = Auth();
+const user = ref(auth.user);
 
 const products = ref([
         {
@@ -53,7 +54,7 @@ const products = ref([
       ])
 
 function logout(){
-  router.push({name: 'login'})
+  auth.logout()
 }
 
 </script>

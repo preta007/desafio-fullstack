@@ -1,4 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
+
+import routes from '@/router/routes.js';
+
 import HomeView from '@/views/HomeView.vue'
 import LoginView from '@/views/LoginView.vue'
 
@@ -8,7 +11,10 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView
+      component: HomeView,
+      meta: {
+        auth: true
+      }
     },
     {
       path: '/login',
@@ -17,5 +23,7 @@ const router = createRouter({
     }
   ]
 })
+
+router.beforeEach(routes);
 
 export default router

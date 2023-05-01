@@ -5,32 +5,52 @@
             <h1 class="h5 mb-3 fw-normal">Faça o login para entrar no sistema!</h1>
 
             <div class="form-floating">
-                <input type="email" class="form-control" id="email" placeholder="name@example.com">
+                <input 
+                  type="email" 
+                  class="form-control" 
+                  id="email" 
+                  placeholder="name@example.com"
+                  v-model="user.email">
                 <label for="email">Email</label>
             </div>
             <div class="form-floating">
-                <input type="password" class="form-control" id="password" placeholder="Password">
+                <input 
+                  type="password" 
+                  class="form-control" 
+                  id="password" 
+                  placeholder="Password"
+                  v-model="user.password">
                 <label for="password">Password</label>
             </div>
 
-            <div class="checkbox mb-3">
-                <label>
-                    <input type="checkbox" value="remember-me"> Remember me
-                </label>
-            </div>
-            <Button label="Entrar" icon="pi pi-lock" class="form-control" @click="login()" />
+            <Button 
+              label="Entrar" 
+              icon="pi pi-lock" 
+              class="form-control"
+              :loading="isLoading"
+              @click="login()" />
         </div>
     </main>
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router'
+import {reactive, ref} from 'vue';
+import { Auth } from '@/stores/auth.js'
+
 import Button from 'primevue/button';
 
-const rauter = useRouter();
+const auth = Auth();
+
+const user = reactive({
+  email: '',
+  password: ''
+})
+
+const isLoading = ref(false)
 
 function login(){
-    rauter.push({name: 'home'})
+  isLoading.value = true;
+  auth.login(user);
 } 
 </script>
 <style scoped>
