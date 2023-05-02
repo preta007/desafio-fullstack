@@ -27,6 +27,7 @@
           <Column field="name" header="Nome"></Column>
           <Column field="email" header="Email"></Column>
           <Column field="city" header="Cidade"></Column>
+          <Column field="updated_at" header="Ultima Atualização"></Column>
           <Column header="Opções" :exportable="false">
             <template #body="slotProps">
                 <Button icon="pi pi-pencil" outlined rounded class="mr-2" @click="editProduct(slotProps.data)" />
@@ -173,6 +174,9 @@ const swal = inject('$swal')
 
 onMounted(async () => {
   const data = await getAll();
+
+  console.log(data.users)
+
   if(data.status){
     users.value = data.users
     isLoading.value = false;

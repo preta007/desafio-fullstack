@@ -101,7 +101,7 @@ class UsersController extends Controller
 
     public function getAll()
     {
-        $models = User::all();
+        $models = User::orderBy('updated_at', 'desc')->get();
         return response()->json(['status' => true, 'users' => $models]);
     }
 
