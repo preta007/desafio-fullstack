@@ -30,14 +30,14 @@
           <Column field="updated_at" header="Ultima Atualização"></Column>
           <Column header="Opções" :exportable="false">
             <template #body="slotProps">
-                <Button icon="pi pi-pencil" outlined rounded class="mr-2" @click="editProduct(slotProps.data)" />
-                <Button icon="pi pi-trash" outlined rounded severity="danger" @click="confirmDeleteProduct(slotProps.data)" />
+                <Button icon="pi pi-pencil" outlined rounded class="mr-2" @click="newUpdate(slotProps.data)" />
+                <Button icon="pi pi-trash" outlined rounded severity="danger" @click="deleteUser(slotProps.data)" />
             </template>
         </Column>
         </DataTable>
     </div>
   </div>
-  <Dialog v-model:visible="visible" modal header="Novo Usuario" :style="{ width: '50vw' }">
+  <Dialog v-model:visible="visible" modal :header="headerModal" :style="{ width: '50vw' }">
     <div class="container-fluid">
       <div class="row">
         <div class="col-12 mb-2">
@@ -136,7 +136,8 @@
     </div>
     <template #footer>
         <Button label="Cancelar" icon="pi pi-times" @click="visible = false" text />
-        <Button label="Salvar" icon="pi pi-check" @click="createUser()" autofocus />
+        <Button v-if="btnSave" label="Salvar" icon="pi pi-check" @click="createUser()" autofocus />
+        <Button v-if="btnUpdate" label="Salvar" icon="pi pi-check" @click="updateUser()" autofocus />
     </template>
   </Dialog>
 </template>
@@ -144,7 +145,7 @@
 <script setup>
 import { ref, reactive, inject, onMounted } from 'vue'
 import { Auth } from '@/stores/auth.js'
-import { getAll, create } from '@/services/users.js'
+import { getAll, create, remove } from '@/services/users.js'
 
 import http from '@/services/http.js'
 
@@ -165,21 +166,25 @@ const form = reactive({
   city: '',
   state: ''
 })
+const idUpdate = ref(0);
 
-const isLoading = ref(true);
+const isLoading = ref(true)
 const users = ref([])
-const visible = ref(false);
+const visible = ref(false)
+const headerModal = ref('')
+
+
+const btnSave = ref(false)
+const btnUpdate = ref(false)
 
 const swal = inject('$swal')
 
 onMounted(async () => {
-  const data = await getAll();
-
-  console.log(data.users)
+  const data = await getAll()
 
   if(data.status){
     users.value = data.users
-    isLoading.value = false;
+    isLoading.value = false
   }
 })
 
@@ -204,14 +209,60 @@ async function buscarCEP(){
 }
 
 function newUser(){
-  limpaForm();
+  limpaForm()
+  btnSave.value = true
+  btnUpdate.value = false
   visible.value = true;
+  headerModal.value = 'Novo Usuario'
+}
+
+function newUpdate(data){
+  limpaForm()
+
+  idUpdate.value = data.id
+  form.name = data.name
+  form.email = data.email
+  form.zip_code =  data.zip_code
+  form.address = data.address
+  form.district = data.district
+  form.city = data.city
+  form.state = data.state
+
+  btnSave.value = false
+  btnUpdate.value = true
+  visible.value = true
+  headerModal.value = 'Editar Usuario'
+}
+
+async function deleteUser(user){
+  swal({
+        title: "Tem certeza? Você não será capaz de reverter isso!",
+        text: user.name + " " + user.email,
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "Deletar",
+    }).then(async (result) => {
+      if (!result.value) {
+        return;
+      }
+
+      const data = await remove(user.id)
+      
+      if(!data.status){
+        console.log(data)
+        swal(data.data.message)
+        return
+      }
+      await atualizaGrid()
+
+    })
 }
 
 async function createUser(){
-  isLoading.value = true;
-  if(!validaForm()){
-    isLoading.value = false;
+  isLoading.value = true
+  if(!validaForm(true)){
+    isLoading.value = false
     return;
   }
 
@@ -227,13 +278,32 @@ async function createUser(){
   limpaForm()
 }
 
+async function updateUser(){
+  isLoading.value = true
+  if(!validaForm(false)){
+    isLoading.value = false
+    return;
+  }
+
+  const data = await update(form, idUpdate.value)
+
+  if(!data.status){
+    console.log(data)
+    swal(data.data.message)
+    return
+  }
+
+  await atualizaGrid()
+  visible.value = false
+  limpaForm()
+}
+
 async function atualizaGrid(){
-  isLoading.value = true;
-  const data = await getAll();
+  isLoading.value = true
+  const data = await getAll()
   if(data.status){
     users.value = data.users
     isLoading.value = false;
-    console.log(data)
   }
 }
 
@@ -241,13 +311,17 @@ function logout(){
   auth.logout()
 }
 
-function validaForm(){
+function validaForm(passValid){
   if(form.address   === ''){ swal('Por favor preencha o endereço!'); return false  }
   if(form.city      === ''){ swal('Por favor preencha a cidade!'); return false  }
   if(form.district  === ''){ swal('Por favor preencha o bairro!'); return false  }
   if(form.email     === ''){ swal('Por favor preencha o email!'); return false  }
   if(form.name      === ''){ swal('Por favor preencha o nome!'); return false  }
-  if(form.password  === ''){ swal('Por favor preencha o password!'); return false  }
+
+  if(passValid){
+    if(form.password  === ''){ swal('Por favor preencha o password!'); return false  }
+  }
+  
   if(form.state     === ''){ swal('Por favor preencha o estado!'); return false  }
   if(form.zip_code  === ''){ swal('Por favor preencha o cep!'); return false  }
 
@@ -256,6 +330,9 @@ function validaForm(){
 }
 
 function limpaForm(){
+
+  idUpdate.value = 0;
+
   form.address = ''
   form.city = ''
   form.district = ''

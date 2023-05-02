@@ -39,12 +39,6 @@ class User extends Authenticatable implements JWTSubject
 		'state'
 	];
 
-	public function contacts()
-	{
-		return $this->hasMany(Contact::class, 'users_id');
-	}
-
-
     public function getJWTIdentifier()
     {
         return $this->getKey();

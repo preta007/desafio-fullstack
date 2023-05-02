@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Contact;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -90,8 +91,12 @@ class UsersController extends Controller
     {
         $model = User::find($id);
 
+        if(auth('api')->user()->id == $model->id){
+            return response()->json(['status' => false, 'message' => 'Você não pode deletar o seu próprio usuário'], 404);
+        }
+
         if(!$model){
-            return response()->json(['status' => false, 'error' => 'user not found'], 404);
+            return response()->json(['status' => false, 'message' => 'user not found'], 404);
         }
 
         $model->delete();
@@ -113,7 +118,6 @@ class UsersController extends Controller
             return response()->json(['status' => false, 'error' => 'user not found'], 404);
         }
 
-        $model->contacts;
         return response()->json(['status' => true, 'user' => $model], 200);
     }
 }
